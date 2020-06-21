@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+'''
+This scripts parses through (checkpoint) configuration files and creates
+a single (network-topology).cfg file that can be imported into 
+diagrams.net picture to display a topology map.
+https://app.diagrams.net/ > Arrange > Insert > Advanced > CSV...
+
+Location: https://github.com/aredey/AkosNetworkConnectivity
+version: 0.1          author: Akos Redey               date: 2020.06.17 
+'''
+import pprint, pdb
+import os, glob, re
+ 
+directory='/home/redey/Documents/AkosNetworkConnetctions/'
+#directory='/home/redey/Lappy-Documents/AkosNetworkConnetctions/'
+#os.chdir(directory)
+
+#Iterate through the .cfg (firewall) configuration files and import
+#interface info into python data structures
+domains = set({})           #Security Domains into a set
+gateways={}                 #Gateway devices into a dict
+for file in glob.glob('*.cfg'):
+  gateway = file.split('.')[0]
+  gateways[gateway]={}                            #gateway   - firewall
+  for line in open(file, 'r'):
+    if re.search('interface.+comments', line):
+      interface=line.split()[2]                   #interface - reference
+      domain=line.split()[4].replace('"', '')     #domain    - sec. dom.
+      domains.add(domain)                     #add domain to domains set
+    elif re.search('interface.+ipv4', line):
+      ipv4=line.split()[4]                        #ipv4   #100.100.100.100
+      preflen=line.split()[6]                     #preflen    #24
+      gateways[gateway][interface]={}
+      gateways[gateway][interface]["domain"]=domain
+      gateways[gateway][interface]["ipv4"]=ipv4
+      gateways[gateway][interface]["preflen"]=preflen
+    else:
+      break
+pprint.pprint(gateways); #pdb.set_trace()
+pprint.pprint(domains)
+  
+#Print out the config part of the draw.io csv
+print ('''# label: %node%
+# style: shape=%shape%;rounded=1;fillColor=%fill%;strokeColor=%stroke%;
+# namespace: csvimport-
+# connect: {"from":"domains", "to":"id","style":"curved=1;endArrow=none;"}
+## connect: {"from":"gateways","to":"id","label":"Route Leaking","style":"curved=1;dashed=1;"}
+# connect: {"from":"domains", "to":"node","style":"curved=1;endArrow=none;"}
+# width: auto
+# height: auto
+# padding: 40
+# ignore: id,shape,fill,stroke,domains,gateways
+# nodespacing: 40
+# levelspacing: 40
+# edgespacing: 40
+# layout: organic
+##
+## You can use either the node or the domains focussed (as nodes) graph,
+## don't need to complete both.
+## Also, you can polulate the domains (for solid edges) or the gateways
+## (for the dashed edges) fields
+##
+## CSV data starts below this line
+id,node,fill,stroke,shape,domains,gateways
+21,WORKING,#0000fc,#000000,mxgraph.networks.firewall,"5,8,9",
+20,PLANNED,#00fffc,#000000,mxgraph.networks.firewall,"Int,DMZ,CDN,EDN"''')
+
+#Print the CSV data
+##Print the gateways
+line_id = 0
+prev_gw = ""
+doms = ""
+for gw in gateways:
+  line_id += 1
+  for intf in gateways[gw]:
+    if gw != prev_gw:
+      prev_gw == ""
+      doms = ""
+    for if_attr in gateways[gw][intf]:
+      if if_attr == 'domain':
+        dom = gateways[gw][intf]['domain']
+        doms += dom+","
+        #if_ip = gateways[gw][intf]['ipv4']       #not used at the moment
+        #pref_len = gateways[gw][intf]['preflen'] #not used at the moment
+        prev_gw = gw
+  print("{},{},{},\"{}\"".format(line_id, gw,"#dae8fc,#ff0000,mxgraph.networks.firewall", doms.strip(',')))
+##Print the domains from the set
+for element in domains:
+  line_id += 1
+  print("{},{},{},{}".format(line_id, element, "#dae8fc,#6c8eba,elipse,","PLACEHOLDER"))

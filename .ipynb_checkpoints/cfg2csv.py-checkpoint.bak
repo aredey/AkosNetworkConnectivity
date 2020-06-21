@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+
+import os
+import glob
+import re
+ 
+directory='/home/redey/Documents/AkosNetworkConnetctions/'
+#directory='/home/redey/Lappy-Documents/AkosNetworkConnetctions/'
+
+#Parsing through .cfg files
+os.chdir(directory)
+seq=0
+for file in glob.glob('*.cfg'):
+  gateway = file.split('.')[0].replace('-', '_')
+  for line in open (file, 'r'):
+    if re.search('interface.+comments', line):
+      interface=line.split()[2]
+      domain=line.split()[4].replace('"', '')
+    if re.search('interface.+ipv4-address', line):
+      interface=line.split()[2].replace('.', '_')
+      address=line.split()[4]
+      mask_length=line.split()[6]
+      seq += 1
+      #print(str(seq)+","+gateway+","+interface+","+domain+","+address+","+mask_length)
+      #id,gateway,fill,stroke,shape,domains,gateways
+      #        1,        Fw 1,       #dae8fc,#ff0000,mxgraph.networks.firewall,"5,8,9"
+      print(str(seq)+","+gateway+","+"#dae8fc,#ff0000,mxgraph.networks.firewall"+","+"'CDN,MBN,Internet'")
+
+#dict[0] = {'gateway': 'FW-1', 'interface': 'erh0', 'comments': 'V100:CDN', 'ipv4': '192.168.1.2', 'mask-length': '24'}
+#dict[1] = {'gateway': 'FW-2', 'interface': 'erh1', 'comments': 'V200:MBN', 'ipv4': '192.168.2.2', 'mask-length': '24'}
+#print(dict)
+
+#https://www.w3schools.com/python/python_dictionaries.asp
+#dict[0] = {'gateway': 'FW-1', 'interface': 'erh0', 'comments': 'V100:CDN', 'ipv4': '192.168.1.2', 'mask-length': '24'}
+#dict[1] = {'gateway': 'FW-2', 'interface': 'erh1', 'comments': 'V200:MBN', 'ipv4': '192.168.2.2', 'mask-length': '24'}
+#print(dict)
+
+
+
+#Write to a file
+#oceans = ["Pacific", "Atlantic", "Indian", "Southern", "Arctic"]
+#with open("/home/redey/Lappy-Documents/AkosNetworkConnetctions/test.csv", "a") as file:
+#  for ocean in oceans:
+    #file.write(ocean)
+    #file.write("\n")
+#    print(ocean, file=file)

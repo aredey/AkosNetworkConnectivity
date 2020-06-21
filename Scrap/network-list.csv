@@ -1,0 +1,33 @@
+## Network logical topology diagram
+# label: %node%
+# style: shape=%shape%;rounded=1;fillColor=%fill%;strokeColor=%stroke%;
+# namespace: csvimport-
+# connect: {"from":"domains", "to":"id","style":"curved=1;endArrow=none;"}
+# connect: {"from":"gateways","to":"id","label":"Route Leaking","style":"curved=1;dashed=1;"}
+# width: auto
+# height: auto
+# padding: 40
+# ignore: id,shape,fill,stroke,domains,gateways
+# nodespacing: 40
+# levelspacing: 40
+# edgespacing: 40
+# layout: organic
+##
+## You can use either the node or the domains focussed (as nodes) graph,
+## don't need to complete both.
+## Also, you can polulate the domains (for solid edges) or the gateways
+## (for the dashed edges) fields
+##
+## CSV data starts below this line
+id,node,fill,stroke,shape,domains,gateways
+1,Fw 1,#dae8fc,#ff0000,mxgraph.networks.firewall,"5,8,9",
+2,Fw-2,#ff0000,#6c8ebf,mxgraph.networks.firewall,"5,8,9,10",
+3,Fw_3,#dae8fc,#6c8ebf,mxgraph.networks.firewall,"6,8",1
+4,Fw 4,#dae8fc,#6c8ebf,mxgraph.networks.firewall,"8,10,11",
+5,Internet,#dae8fa,#6c8eba,mxgraph.networks.cloud,,
+6,ADN,#dae8fc,#6c8ebf,ellipse,,
+7,BDN,#dae8fc,#6c8ebf,ellipse,,8
+8,CDN,#dae8aa,#ff8eaa,ellipse,,
+9,DMZ,#ffe8fc,#ff8ebf,ellipse,,3
+10,EDN,#dae8fc,#6c8eba,ellipse,,
+11,FDN,#dae8fc,#6c8ebf,ellipse,,
