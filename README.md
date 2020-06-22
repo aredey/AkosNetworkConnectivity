@@ -2,7 +2,7 @@
 
 This is a python3 script that generates a CSV file that can be used in https://app.diagrams.net/ to display the associated network topology. The topology consist if firewall (gateway) devices between security domains. 
 
-The input to the script is a set of configuration (device_host_name.cfg) files describing the device interfaces (and static routes - this info is not currently used), saved under the subdirectory `Configs/*.cfg` . A sample of 4 such config files (emulating four Checkpoint firewall configuration scripts) have been supplied.
+The input to the script is a set of configuration (device_host_name.cfg) files describing the device interfaces (and static routes - this info is not currently used), saved under the subdirectory `Configs/*.cfg` . A sample of 4 such config files (emulating four Checkpoint firewall configuration scripts) have been supplied. Please note, it is mandatory that each interface has one comments and one IPv4 address line and that the comments line preceeds rge IP address one. 
 
 Run the script as `cfg2csv.py`. This will result in the output of a CSV file that can be used to dra the topology diagram with [draw.io](https://app.diagrams.net/):
 
