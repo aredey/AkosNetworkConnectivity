@@ -5,7 +5,7 @@ file and and IP address (on the command line) and outputs the associated
 security domain
 
 Location: https://github.com/aredey/AkosNetworkConnectivity
-version: 0.1          author: Akos Redey               date: 2020.07.xx
+version: 0.1          author: Akos Redey               date: 2020.07.05
 '''
 import pprint
 import argparse
