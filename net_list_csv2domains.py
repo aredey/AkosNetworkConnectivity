@@ -25,6 +25,7 @@ group = parser.add_mutually_exclusive_group()
 group.add_argument('-q', '--quiet',   action='store_true', help='Display minimal information')
 group.add_argument('-v', '--verbose', action='store_true', help='Chatty information display')
 parser.add_argument('-d','--dst_addr', type=str, metavar='', help='Destination IP address')
+parser.add_argument('-a','--all', action='store_true', help='Print all matching domains not only the longest prefix')
 #parser.add_argument('-c','--cfg_dir',type=str, metavar='', help='Directory containg *.cfg files')
 parser.add_argument('-n','--net_list',type=str, metavar='', help='Network list .csv file')
 args = parser.parse_args()
@@ -37,14 +38,16 @@ if args.net_list:
   network_list_csv = args.net_list
 
 if args.quiet:
-  print(source)
-  print(destination)
+#  print(source)
+#  print(destination)
 #  print(config_directory)
-  print(network_list_csv)
+#  print(network_list_csv)
+  pass
 elif args.verbose:
+  print("### Input parameters/info:")
   print("[Source] IP:                           {}".format(source))
   print("Destination IP:                        {}".format(destination))
-  print("Location of *.cfg configuration files: {}".format(config_directory))
+  #print("Location of *.cfg configuration files: {}".format(config_directory))
   print("Network definition csv file:           {}".format(network_list_csv))
 #else:                                     #default command lin display
 #  print("source:           {}".format(source))
@@ -75,23 +78,31 @@ if args.verbose:
     print(doms,":")
     for n in nets:
       print("\t",n)
-  
 
 ########################################################################
 # Display network address and domain for matches
 def match_network(ip_address):
   for sec_domain, nets in domains.items():
     for ip_network in nets:
-      #print(sec_domain, ip_network, ip_address)
       if netaddr.IPAddress(ip_address) in netaddr.IPNetwork(ip_network):
-        print('"{}" is member of "{}" that is part of the "{}" domain'.format(ip_address, ip_network, sec_domain))
+        if args.all:
+          if args.quiet:
+            print(sec_domain)
+          else:
+            print('"{}" is a host on "{}" that is part of the "{}" domain'.format(ip_address, ip_network, sec_domain))
+        else: #no --all so only print the last longest prefix length match
+          longest_ip_network = ip_network
+          longest_sec_domain = sec_domain
+  if not args.all:
+    if args.quiet:
+      print(longest_sec_domain)
+    else:
+      print('"{}" is a host on "{}" that is part of the "{}" domain'.format(ip_address, ip_network, sec_domain))
+          
 
 if destination:
-  print("The Source:")
   match_network(source)
-  print("\nThe Destination:")
   match_network(destination)
 else:
-  print("The IP address:")
   match_network(source)
   
