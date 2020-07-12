@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 This scripts reads in a network (security domains - IP networks) list 
-file and and IP address (on the command line) and outputs the associated
+file and an IP address (on the command line) and outputs the associated
 security domain
 
 Location: https://github.com/aredey/AkosNetworkConnectivity

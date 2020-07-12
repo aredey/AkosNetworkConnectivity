@@ -32,25 +32,31 @@ os.chdir(directory)
 domains = ({})                            #Security Domains into a dict
 gateways=({})                             #Gateway devices into a dict
 node_id=100000      #node_id: arbitrary "large" integer to distinguish
-                    #gateway devices from security domains
-for file in glob.glob('*.cfg'):
-  gateway = file.split('.')[0]
+                    #gateway devices from security domains in the dict
+for cfg_file in glob.glob('*.cfg'):
+  gateway = cfg_file.split('.')[0]
   gateways[gateway]={}                                        #gateway
-  for line in open(file, 'r'):
+  for line in open(cfg_file, 'r'):
     if re.search('interface.+comments', line):
       interface=line.split()[2]                               #interface
       domain=line.split()[4].replace('"', '')                 #domain
       domains[domain]=node_id              #add domain to domains dict
       node_id += 1
-    elif re.search('interface.+ipv4', line):
+    elif re.search('interface.+ipv4', line):  #There must be "comments"
+      if not interface:
+        interface = interface=line.split()[2]
+        domain='Unknown Domain'                 #domain
+        domains[domain]=node_id              #add domain to domains dict
+        raise RuntimeError('Missing "comments" (Domain designation) for interface '+interface+" in gateway "+gateway)
       ipv4=line.split()[4]                                    #ipv4
       preflen=line.split()[6]                                 #preflen
       gateways[gateway][interface]={}
       gateways[gateway][interface]["domain"]=domain
       gateways[gateway][interface]["ipv4"]=ipv4
       gateways[gateway][interface]["preflen"]=preflen
+      interface=False          #There weren't comments for the interface
     else:
-      break
+      continue
 #pprint.pprint(gateways); #pdb.set_trace()
 #pprint.pprint(domains)
 

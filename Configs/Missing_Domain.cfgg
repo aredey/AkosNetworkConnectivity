@@ -1,0 +1,9 @@
+set interface AAAAA comments "Internet"
+set interface AAAAA ipv4-address 11.11.11.11 mask-length 24
+set interface BBBBB comments "DMZ"
+set interface BBBBB ipv4-address 22.22.22.22 mask-length 24
+set interface CCCCC ipv4-address 33.33.33.33 mask-length 16
+set static-route default comment "Default route to the World"
+set static-route default nexthop gateway address 100.100.100.100 priority 1 on
+set static-route 10.0.0.0/8 nexthop gateway address 10.0.1.20 priority 1 on
+set static-route 10.1.0.0/8 nexthop gateway address 10.0.1.20 priority 1 on
