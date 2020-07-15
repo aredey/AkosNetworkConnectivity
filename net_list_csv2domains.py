@@ -97,7 +97,7 @@ def match_network(ip_address):
     if args.quiet:
       print(longest_sec_domain)
     else:
-      print('"{}" is a host on "{}" that is part of the "{}" domain'.format(ip_address, ip_network, sec_domain))
+      print('"{}" is a host on "{}" that is part of the "{}" domain'.format(ip_address, longest_ip_network, longest_sec_domain))
           
 
 if destination:
